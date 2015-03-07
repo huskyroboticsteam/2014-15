@@ -27,6 +27,17 @@ void setup() {
   Serial.begin(9600);
 }
 
+void readByteAsInt(byte data, int* buffer, byte bufferSize) {
+  byte mask = 0x03;
+
+  for(byte i = 0; i < bufferSize; i++)
+  {
+    *buffer = data & mask;
+    data >>= 2;
+    buffer++;
+  } 
+}
+
 void loop() {
   // if there's data available, read a packet
   int packetSize = Udp.parsePacket();
