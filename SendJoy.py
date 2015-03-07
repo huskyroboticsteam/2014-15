@@ -5,7 +5,7 @@ import struct
 import time
 from pygame.locals import *
 
-adress = ("127.0.0.1", 1000)
+address = ("127.0.0.1", 1000)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -21,8 +21,6 @@ else:
     fir_joystick.init()
     sec_joystick = pygame.joystick.Joystick(1)
     sec_joystick.init()
-
-        
 
 done = False
 
@@ -40,34 +38,13 @@ while done==False:
     vertAx2 = normalize(sec_joystick.get_axis(1))
     horAxis2 = normalize(sec_joystick.get_axis(0))
 
-    values = (vertAx1, horAxis1, vertAx2, horAxis2 )
-    s = struct.Struct('f f f f')
-    packet_data = s.pack(*values)
+    message = str(horAxis1) + str(vertAx1) + str(horAxis2) + str(vertAx2)
 
-    message = "One" + str(horAxis1) + ", " + str(vertAx1) + " Two" + str(horAxis2) + ", " + str(vertAx2)
-
-    sock.sendto(message, adress) 
+    sock.sendto(message, address) 
     #sock.sendto(binascii.hexlify(packet_data), (IP, PORT))
+
+    print(message)
     
-   
-    print("x1")
-
-    print(horAxis1)
-
-    print("y1")
-    
-
-    print(vertAx1)
-
-    print("x2")
-
-    print(horAxis2)
-
-    print("y2")
-    
-
-    print(vertAx2)
-
     time.sleep(1)
 
 pygame.quit ()
