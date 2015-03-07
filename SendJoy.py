@@ -27,7 +27,7 @@ else:
 done = False
 
 def normalize(value):
-    return int(value * 180)
+    return int((value + 1)/2 * 180)
 
 while done==False:
     for event in pygame.event.get():
