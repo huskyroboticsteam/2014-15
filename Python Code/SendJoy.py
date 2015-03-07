@@ -5,7 +5,7 @@ import struct
 import time
 from pygame.locals import *
 
-address = ("127.0.0.1", 1000)
+address = ("192.168.1.10", 8888)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -25,7 +25,7 @@ else:
 done = False
 
 def normalize(value):
-    return int((-value + 1)/2 * 500 + 1250)
+    return int((-value + 1)/2 * 255)
 
 while done==False:
     for event in pygame.event.get():
@@ -38,7 +38,7 @@ while done==False:
     vertAx2 = normalize(sec_joystick.get_axis(1))
     #horAxis2 = normalize(sec_joystick.get_axis(0))
 
-    message = str(vertAx1) + "\0" + ":" + str(vertAx2) + "\0"
+    message = chr(vertAx1) + chr(vertAx2)
     #message = str(horAxis1) + ":" + str(vertAx1) + ":" + str(horAxis2) + ":" + str(vertAx2)
 
     sock.sendto(message, address) 
