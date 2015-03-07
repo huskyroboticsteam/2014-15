@@ -15,27 +15,30 @@ if joystick_count == 0:
     # No joysticks!
     print ("Error, I didn't find any joysticks.")
 else:
-        # Use joystick #0 and initialize it
-        print ("init")
-        fir_joystick = pygame.joystick.Joystick(0)
-        fir_joystick.init()
-        sec_joystick = pygame.joystick.Joystick(1)
-        sec_joystick.init()
+    # Use joystick #0 and initialize it
+    print ("init")
+    fir_joystick = pygame.joystick.Joystick(0)
+    fir_joystick.init()
+    sec_joystick = pygame.joystick.Joystick(1)
+    sec_joystick.init()
 
         
 
 done = False
 
+def normalize(value):
+    return int(value * 180)
+
 while done==False:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-                done=True
-                continue
+            done=True
+            continue
 
-    vertAx1 = fir_joystick.get_axis(1)
-    horAxis1 = fir_joystick.get_axis(0)
-    vertAx2 = sec_joystick.get_axis(1)
-    horAxis2 = sec_joystick.get_axis(0)
+    vertAx1 = normalize(fir_joystick.get_axis(1))
+    horAxis1 = normalize(fir_joystick.get_axis(0))
+    vertAx2 = normalize(sec_joystick.get_axis(1))
+    horAxis2 = normalize(sec_joystick.get_axis(0))
 
     values = (vertAx1, horAxis1, vertAx2, horAxis2 )
     s = struct.Struct('f f f f')
