@@ -25,7 +25,7 @@ else:
 done = False
 
 def normalize(value):
-    return int((value + 1)/2 * 180)
+    return int((-value + 1)/2 * 500 + 1250)
 
 while done==False:
     for event in pygame.event.get():
@@ -34,11 +34,12 @@ while done==False:
             continue
 
     vertAx1 = normalize(fir_joystick.get_axis(1))
-    horAxis1 = normalize(fir_joystick.get_axis(0))
+    #horAxis1 = normalize(fir_joystick.get_axis(0))
     vertAx2 = normalize(sec_joystick.get_axis(1))
-    horAxis2 = normalize(sec_joystick.get_axis(0))
+    #horAxis2 = normalize(sec_joystick.get_axis(0))
 
-    message = chr(horAxis1) + chr(vertAx1) + chr(horAxis2) + chr(vertAx2)
+    message = str(vertAx1) + ":" + str(vertAx2)
+    #message = str(horAxis1) + ":" + str(vertAx1) + ":" + str(horAxis2) + ":" + str(vertAx2)
 
     sock.sendto(message, address) 
     #sock.sendto(binascii.hexlify(packet_data), (IP, PORT))
