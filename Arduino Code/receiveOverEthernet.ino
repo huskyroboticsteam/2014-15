@@ -60,8 +60,16 @@ void loop() {
 
     // read the packet into packetBufffer
     Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+    int *buffer;
+    for (int i = 0; i < packetSize; i++) {
+      readByteAsInt(packetBuffer[i], buffer, 1);
+    }
     Serial.println("Contents:");
     Serial.println(packetBuffer);
+    Serial.println("Converted:");
+    for (int i = 0; i < packetSize; i++) {
+      Serial.println(buffer[i]); 
+    }
 
     // send a reply, to the IP address and port that sent us the packet we received
     Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());

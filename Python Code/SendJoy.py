@@ -5,7 +5,7 @@ import struct
 import time
 from pygame.locals import *
 
-address = ("192.168.1.10", 8888)
+address = ("192.168.1.177", 8888)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
