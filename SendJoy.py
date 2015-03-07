@@ -38,7 +38,7 @@ while done==False:
     vertAx2 = normalize(sec_joystick.get_axis(1))
     #horAxis2 = normalize(sec_joystick.get_axis(0))
 
-    message = str(vertAx1) + ":" + str(vertAx2)
+    message = str(vertAx1) + "\0" + ":" + str(vertAx2) + "\0"
     #message = str(horAxis1) + ":" + str(vertAx1) + ":" + str(horAxis2) + ":" + str(vertAx2)
 
     sock.sendto(message, address) 
