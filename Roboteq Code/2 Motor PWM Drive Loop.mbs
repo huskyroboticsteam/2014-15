@@ -31,17 +31,17 @@ While True
 	' Convert values from PWM range to motor output range
 	' Set motor value to zero if not in range by more than 20 (buffer)
 	
-	if (leftMotorPWM > MOTOR_OUT_MIN - 20) {
+	If (leftMotorPWM > MOTOR_OUT_MIN - 20) Then 
 		leftMotorOUT = (((leftMotorPWM - PWM_MIN) * MOTOR_OUT_RANGE) / PWM_RANGE) + MOTOR_OUT_MIN
-	} else {
+	Else 
 		leftMotorOUT = 0
-	}
+	End If
 	
-	if (rightMotorPWM > MOTOR_OUT_MIN - 20) {
+	If (rightMotorPWM > MOTOR_OUT_MIN - 20) Then
 		rightMotorOUT = (((rightMotorPWM - PWM_MIN) * MOTOR_OUT_RANGE) / PWM_RANGE) + MOTOR_OUT_MIN
-	} else {
+	Else
 		rightMotorOUT = 0
-	}
+	End if
 	
 	' Set motor power
 	SetCommand(_GO, 1, leftMotorOUT)
