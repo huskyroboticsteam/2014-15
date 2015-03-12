@@ -1,0 +1,51 @@
+' Requires that all variables be declared before use
+Option Explicit
+
+' Declare constants
+Dim PWM_MIN as Integer
+Dim PWM_RANGE as Integer
+Dim MOTOR_OUT_MIN as Integer
+Dim MOTOR_OUT_RANGE as Integer
+
+' Initialize constants
+PWM_MIN = 1256
+PWM_RANGE = 500
+MOTOR_OUT_MIN = -1000
+MOTOR_OUT_RANGE = 2000
+
+' Declare variables
+Dim leftMotorPWM as Integer
+Dim rightMotorPWM as Integer
+Dim leftMotorOUT as Integer
+Dim rightMotorOUT as Integer
+
+
+While True
+	wait(10)
+	
+	' Get values from PWM inputs
+	' Note: _PLSIN 1 corresponds to pin 4, and _PLSIN 2 corresponds to pin 8 (on the MDC2XXX)
+	leftMotorPWM = GetValue(_PLSIN, 1)
+	rightMotorPWM = GetValue(_PLSIN, 2)
+	
+	' Convert values from PWM range to motor output range
+	leftMotorOUT = (((leftMotorPWM - PWM_MIN) * MOTOR_OUT_RANGE) / PWM_RANGE) + MOTOR_OUT_MIN
+	rightMotorOUT = (((rightMotorPWM - PWM_MIN) * MOTOR_OUT_RANGE) / PWM_RANGE) + MOTOR_OUT_MIN
+	
+	' Set motor power
+	SetCommand(_GO, 1, leftMotorOUT)
+	SetCommand(_GO, 2, rightMotorOUT)
+	
+	' Print motor values for debug
+	Print("LEFT: ")
+	Print(leftMotorOUT)
+	Print("\n")
+	Print("RIGHT: ")
+	Print(rightMotorOUT)
+	Print("\n")
+End While
+
+' Humorous easter egg
+Print("You should never see this. The loop above should run indefinitely. AFAIK, UR SOL.  :)")
+
+Terminate
