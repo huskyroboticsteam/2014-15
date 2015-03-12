@@ -1,5 +1,5 @@
-' Requires that all variables be declared before use
 Option Explicit
+' Requires that all variables be declared before use
 
 ' Declare constants
 Dim PWM_MIN as Integer
@@ -29,8 +29,19 @@ While True
 	rightMotorPWM = GetValue(_PLSIN, 2)
 	
 	' Convert values from PWM range to motor output range
-	leftMotorOUT = (((leftMotorPWM - PWM_MIN) * MOTOR_OUT_RANGE) / PWM_RANGE) + MOTOR_OUT_MIN
-	rightMotorOUT = (((rightMotorPWM - PWM_MIN) * MOTOR_OUT_RANGE) / PWM_RANGE) + MOTOR_OUT_MIN
+	' Set motor value to zero if not in range by more than 20 (buffer)
+	
+	if (leftMotorPWM > MOTOR_OUT_MIN - 20) {
+		leftMotorOUT = (((leftMotorPWM - PWM_MIN) * MOTOR_OUT_RANGE) / PWM_RANGE) + MOTOR_OUT_MIN
+	} else {
+		leftMotorOUT = 0
+	}
+	
+	if (rightMotorPWM > MOTOR_OUT_MIN - 20) {
+		rightMotorOUT = (((rightMotorPWM - PWM_MIN) * MOTOR_OUT_RANGE) / PWM_RANGE) + MOTOR_OUT_MIN
+	} else {
+		rightMotorOUT = 0
+	}
 	
 	' Set motor power
 	SetCommand(_GO, 1, leftMotorOUT)
