@@ -8,8 +8,8 @@ Dim MOTOR_OUT_MIN as Integer
 Dim MOTOR_OUT_RANGE as Integer
 
 ' Initialize constants
-PWM_MIN = 1256
-PWM_RANGE = 500
+PWM_MIN = 1007
+PWM_RANGE = 1000
 MOTOR_OUT_MIN = -1000
 MOTOR_OUT_RANGE = 2000
 
