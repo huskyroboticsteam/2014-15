@@ -29,14 +29,28 @@ void getReadingFromCurrentSensor() {
 
 // Turn the rare analog read from Arduino to current reading
 // @requires: an analog reading input from ACS758
-// @throws:   If input is smaller than 100 or larger than 200, 
+// @throws:   If input is smaller than 101 or larger than 189, 
 //            throws error message in console
 // @returns:  a current value in milliAmps. 
-int rareDataToAmp(int currentReading) {
+int rareDataToAmp(int analogReading) {
   // From the Datasheet, we have 40mV/A, which equals to 25 mA/mV
   int sensitivity = 25;
+  // Value measured, Apr. 11, 2015, Beck Pang & Andrew DeBartolo
+  int staticVoltage = 121;
+  int MaxCurrentPassThrough = 169;
+  
+  int currentReading = analogReading - staticVoltage;
+  int voltageRead;
+  if (analogReading < staticVoltage - 20) {
+    Serial.println("Current Sensor has floating VCC"); 
+    return -1;
+  } else if (analogReading > MaxCurrentPassThrough + 20) {
+    Serial.println("Warning: Too much current consumed by the source");
+    voltageRead = map(currentReading, 0, 1023, 0, 5000);
+  } else {
   // turn the analog read to milliVolt
-  int voltageRead = map(currentReading, 0, 1023, 0, 5000);
+    voltageRead = map(currentReading, 0, 1023, 0, 5000);
+  }
   return voltageRead * sensitivity;
 }
 
