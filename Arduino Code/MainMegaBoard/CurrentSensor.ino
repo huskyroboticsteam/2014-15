@@ -6,45 +6,48 @@
 // @Measured: 121 Static;
 //            149 Max current powered from the motor controller;
 //            169 Max current powered directly from battery;
-int current1Max = 0;
-int current1Min = 169;
-int current2Max = 0;
-int current2Min = 169;
+int currentReadingMax = 0;
+int currentReadingMin = 169;
 
 void getReadingFromCurrentSensor() {
-  int currentReading1 = analogRead(currentSensorPin1);
+  // Data gathering
+  int currentReading = analogRead(currentSensorPin);
   delay(500);
-  if (currentReading1 > current1Max) {
-     current1Max = currentReading1;
+  if (currentReading > currentReadingMax) {
+     currentReadingMax = currentReading;
   }  
-  if (currentReading1 < current1Min) {
-     current1Min = currentReading1;
+  if (currentReading < currentReadingMin) {
+     currentReadingMin = currentReading;
   }
-  
-  int currentReading2 = analogRead(currentSensorPin2);
-  delay(500);
-  if (currentReading2 > current2Max) {
-     current2Max = currentReading2;
-  }  
-  if (currentReading2 < current2Min) {
-     current2Min = currentReading2;
-  }
-  printReading(currentReading1, currentReading2);
 
+  // Data translating to milliAmps
+  int current = rareDataToAmp(currentReading); // in milliAmps
+  int currentMax = rareDataToAmp(currentReadingMax);
+  int currentMin = rareDataToAmp(currentReadingMin);
+  printReading(current, currentMax, currentMin);
 }
 
-void printReading(currentReading1, currentReading2) {
-  Serial.print("A1 Reads:");
-  Serial.println(currentReading1);
-  Serial.print("    Max:");
-  Serial.println(current1Max);
-  Serial.print("    Min:");
-  Serial.println(current1Min);
+// Turn the rare analog read from Arduino to current reading
+// @requires: an analog reading input from ACS758
+// @throws:   If input is smaller than 100 or larger than 200, 
+//            throws error message in console
+// @returns:  a current value in milliAmps. 
+int rareDataToAmp(int currentReading) {
+  // From the Datasheet, we have 40mV/A, which equals to 25 mA/mV
+  int sensitivity = 25;
+  // turn the analog read to milliVolt
+  int voltageRead = map(currentReading, 0, 1023, 0, 5000);
+  return voltageRead * sensitivity;
+}
 
- Serial.print("A2 Reads:");
- Serial.println(currentReading2);
- Serial.print("    Max:");
- Serial.println(current2Max);
- Serial.print("    Min:");
- Serial.println(current2Min);
+void printReading(int current, int currentMax, int currentMin) {
+  Serial.print("A1 Reads current: ");
+  Serial.print(current);
+  Serial.println("mA");
+  Serial.print("    Max:");
+  Serial.print(currentReadingMax);
+  Serial.println("mA");
+  Serial.print("    Min:");
+  Serial.print(currentReadingMin);
+  Serial.println("mA");
 }

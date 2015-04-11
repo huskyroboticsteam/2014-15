@@ -3,8 +3,7 @@
 #include <Servo.h>
 
 const int BAUD_RATE = 9600;
-int currentSensorPin1 = A1;
-int currentSensorPin2 = A2;
+int currentSensorPin = A1;
 
 int potPin = A0;
 int potValue;
