@@ -1,18 +1,13 @@
 /*
-  ethernetshieldtests.ino
+  ArduinoMain.ino
  Processes sensors and UDP packets to determine motor outputs.
  */
-
 
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>         // UDP library from: bjoern@cs.stanford.edu 12/30/2008
 
-#include <Wire.h>
-
 #include <Servo.h>
-#include <map>
-#include <string>
 
 boolean hasIP = false;
 
@@ -24,8 +19,30 @@ HAND[3] = {2, 3, 5}, AGAR_SPIKE[2] = {22, 24}, TIMEOUT = 1000, PRESSURE = A0;
 
 // Motors
 Servo leftMotor, rightMotor;
-Servo armMotor[4];
-Servo handMotor[3];
+Servo netRotServo, netTiltServo; 
+Servo handServos[4];
+Servo armMotors[4];
+Servo sciStatServos[4];
+
+// Default Recieved Data
+int leftPower   = 128;
+int rightPower  = 128;
+int netRot = 128;
+int netTilt = 128;
+
+int hand[4] = {
+  1, 1, 1, 1};
+int arm[4] = {
+  1, 1, 1, 1};
+int sciStat[4] = {
+  1, 1, 1, 1};
+  
+// Changing values
+int handPos[3] = {90, 90, 90};
+
+// Sent Data
+int pressureValue  = 0;
+
 
 // An EthernetUDP instance to let us send and receive packets over UDP
 EthernetUDP Udp;
@@ -41,22 +58,23 @@ char packetBuffer[96]; //buffer to hold incoming packet,
 char  ReplyBuffer[] = "acknowledged";       // a string to send back
 unsigned long timeLastPacket = millis() - TIMEOUT;
 
-// Recieved Data
-int leftPower   = 128;
-int rightPower  = 128;
-int arm[4] = {
-  1, 1, 1, 1};
-int hand[3] = {
-  1, 1, 1};
-int misc[4] = {
-  1, 1, 1, 1};
-  
-// Changing values
-int handPos[3] = {90, 90, 90};
+int dirToMicroSeconds(int dir);
+int freeRam();
+void printPacketInfo(int packetSize);
+void printPacketValues();
+bool processNetworkData();
+void readByteAsInt(byte data, int* buffer, byte bufferSize);
 
-// Sent Data
-int pressureValue  = 0;
 
+int dirToMicroseconds(int dir) {
+  if(dir == 0) {
+    return MIN_FREQUENCY;
+  } else if(dir == 2) {
+    return MAX_FREQUENCY;
+  } else {
+    return NEUTRAL_FREQUENCY;
+  }
+}
 
 // Returns the amount of RAM Free
 int freeRam ()
@@ -86,28 +104,7 @@ void printPacketInfo(int packetSize) {
 
 // Prints readable versions of packet
 void printPacketValues() {
-  Serial.print("Left: ");
-  Serial.println(leftPower);
-  Serial.print("Right: ");
-  Serial.println(rightPower);
-
-  for(int i = 0; i < 4; i++)
-  {
-    Serial.print("Arm:");
-    Serial.println(arm[i]);
-  }
-
-  for(int i = 0; i < 3; i++)
-  {
-    Serial.print("Hand:");
-    Serial.println(hand[i]);
-  }
-
-  for(int i = 0; i < 4; i++)
-  {
-    Serial.print("Misc:");
-    Serial.println(misc[i]);
-  }
+  // TODO
 }
 
 void readByteAsInt(byte data, int* buffer, byte bufferSize) {
@@ -121,27 +118,15 @@ void readByteAsInt(byte data, int* buffer, byte bufferSize) {
   }
 }
 
-int dirToMicroseconds(int dir) {
-  if(dir == 0) {
-    return MIN_FREQUENCY;
-  }
-  if(dir == 2) {
-    return MAX_FREQUENCY;
-  }
-  return NEUTRAL_FREQUENCY;
-}
-
-int processNetworkData() {
+bool processNetworkData() {
   //Serial.println(freeRam());
   // Check size of available packet
   int packetSize = Udp.parsePacket();
 
   // Process packet if available
-  if(packetSize == 5)
+  if(packetSize == 8)
   {
     hasIP=true;
-    //printPacketInfo(packetBuffer);
-    //Serial.println("GOOD");
 
     // read the packet into packetBufffer
     Udp.read(packetBuffer, 96);
@@ -149,32 +134,16 @@ int processNetworkData() {
     // Process packet into values
     leftPower  = ((unsigned char)packetBuffer[0]) & 0xFFFF;
     rightPower  = ((unsigned char)packetBuffer[1]) & 0xFFFF;
-    readByteAsInt(packetBuffer[2], arm, 4);
-    readByteAsInt(packetBuffer[3], hand, 3);
-    readByteAsInt(packetBuffer[4], misc, 4);
+    netRot = ((unsigned char)packetBuffer[2]) & 0xFFFF;
+    netTilt = ((unsigned char)packetBuffer[3]) & 0xFFFF;
+    readByteAsInt(packetBuffer[5], hand, 4);
+    readByteAsInt(packetBuffer[6], arm, 4);
+    readByteAsInt(packetBuffer[7], sciStat, 4);
 
     //printPacketValues();
     return 1;
-  }
-  return 0;
-}
-
-// Handle i2c Event
-void receivei2c(int howMany) {
-  if(howMany == 9) {
-    char i2cData[8];
-    Wire.read();
-  
-    for(int i = 0; i < 8;  i++) {
-      char c = Wire.read();
-      i2cData[i] = c;
-    }
-    
-    if(hasIP) {
-      Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-      Udp.write(i2cData);
-      Udp.endPacket();
-    }
+  } else {
+    return 0;
   }
 }
 
@@ -183,10 +152,6 @@ void setup() {
   // start the Ethernet and UDP:
   Ethernet.begin(mac,ip);
   Udp.begin(localPort);
-
-  // i2c
-  Wire.begin(4); // Join i2c with address #1
-  Wire.onReceive(receivei2c);
 
   // Start serial
   Serial.begin(9600);
@@ -198,11 +163,12 @@ void setup() {
   rightMotor.writeMicroseconds(NEUTRAL_FREQUENCY);
 
   for(int i = 0; i < 4; i++) {
-    armMotor[i].attach(TALON_ARM[i]);
-    armMotor[i].writeMicroseconds(NEUTRAL_FREQUENCY);
+    armMotors[i].attach(TALON_ARM[i]);
+    armMotors[i].writeMicroseconds(NEUTRAL_FREQUENCY);
   }
+  
   for(int i = 0; i < 3; i++) {
-    handMotor[i].attach(HAND[i]);
+    handServos[i].attach(HAND[i]);
   }
 
   pinMode(AGAR_SPIKE[0], OUTPUT);
@@ -244,45 +210,8 @@ void loop() {
     leftMotor.writeMicroseconds(map(leftPower, 0, 255, MIN_FREQUENCY, MAX_FREQUENCY));
     rightMotor.writeMicroseconds(map(rightPower, 0, 255, MIN_FREQUENCY, MAX_FREQUENCY));
     for(int i = 0; i < 4; i++) {
-      armMotor[i].writeMicroseconds(dirToMicroseconds(arm[i]));
+      armMotors[i].writeMicroseconds(dirToMicroseconds(arm[i]));
     }
-    
-    for(int i = 0; i < 3; i++) {
-      Serial.print("Hand: ");
-      Serial.print(i);
-      Serial.println(hand[i]);
-      if(hand[i] == 0 || hand[i] == 2) {
-        if(hand[i] == 0 && handPos[i] < 180) {
-          handPos[i] += 5;
-        } else if(handPos[i] > 0) {
-          handPos[i] -= 5;
-        }
-        handMotor[i].write(handPos[i]);
-      }
-    }
-
-    // Compressor
-    if(misc[0]) {
-      digitalWrite(COMPRESSOR, HIGH);
-    }
-
-    if(misc[1] == 0) {
-      digitalWrite(AGAR_SPIKE[0], HIGH);
-      digitalWrite(AGAR_SPIKE[1], LOW);
-    } 
-    else if(misc[1] == 2) {
-      digitalWrite(AGAR_SPIKE[0], LOW);
-      digitalWrite(AGAR_SPIKE[1], HIGH);
-    } 
-    else {
-      digitalWrite(AGAR_SPIKE[0], HIGH);
-      digitalWrite(AGAR_SPIKE[1], HIGH);
-    }
-    
-    // i2c Sci-Dump
-    Wire.beginTransmission(42);
-    Wire.write(misc[2]);
-    Wire.endTransmission();
   }
 
   delay(5);
