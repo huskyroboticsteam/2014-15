@@ -8,9 +8,17 @@ void setup() {
   Serial.begin(BAUD_RATE);
   motor1.attach(motorPin1);
   motor2.attach(motorPin2);
+  
+  // set up the arm to steady
+  for(int i = 0; i < 3; i++) {
+    armMotor[i].attach(TALON_ARM[i]);
+    armMotor[i].writeMicroseconds(NEUTRAL_FREQUENCY);
+  }
 }
 
 void loop() {
-  driveMotorFullSpeed();
-  getReadingFromCurrentSensor();
+  // driveMotorFullSpeed();
+  // getReadingFromCurrentSensor();
+  armRiseAndBack();
+  delay(100);
 }

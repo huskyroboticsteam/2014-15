@@ -20,5 +20,5 @@ void driveMotorFullSpeed() {
   		motor1.writeMicroseconds(1500);
   		motor2.writeMicroseconds(1500);
   	}
-    delay(10);
+    // delay(10);
 }
