@@ -24,3 +24,6 @@ const int TALON_ARM[3] = {2, 3, 4};
 const int NEUTRAL_FREQUENCY = 1500;
 const int SPEEDUP_FREQUENCY = 1750;
 const int SPEEDDOWN_FREWQUENCY = 1250;
+
+// Turn table continous rotation servo
+const int CONT_SERVO_CENTER 80 //in degrees 

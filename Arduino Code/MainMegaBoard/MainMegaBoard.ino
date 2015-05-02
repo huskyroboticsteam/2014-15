@@ -6,6 +6,7 @@
 
 void setup() {
   Serial.begin(BAUD_RATE);
+  Serial1.begin(BAUD_RATE);
   motor1.attach(motorPin1);
   motor2.attach(motorPin2);
   
@@ -17,8 +18,11 @@ void setup() {
 }
 
 void loop() {
-  // driveMotorFullSpeed();
+  // Pass in the pot value from 0 to 1023
+  driveMotorFullSpeed(1023);
   // getReadingFromCurrentSensor();
   armRiseAndBack();
   delay(100);
 }
+
+
