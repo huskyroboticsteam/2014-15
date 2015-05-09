@@ -11,11 +11,11 @@ void driveMotorFullSpeed(int potValue) {
   	sendValue = map(potValue, 0, 1023, 1250, 1750);
   	if (sendValue < 1480 || sendValue > 1520)
   	{
-  		motor1.writeMicroseconds(sendValue);
-  		motor2.writeMicroseconds(-sendValue);
+  		leftMotor.writeMicroseconds(sendValue);
+  		rightMotor.writeMicroseconds(-sendValue);
   	}	else {
-  		motor1.writeMicroseconds(1500);
-  		motor2.writeMicroseconds(1500);
+  		leftMotor.writeMicroseconds(1500);
+  		rightMotor.writeMicroseconds(1500);
   	}
     // delay(10);
 }

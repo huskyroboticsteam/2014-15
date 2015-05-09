@@ -186,7 +186,7 @@ void setup() {
 
   // i2c
   Wire.begin(4); // Join i2c with address #1
-  Wire.onReceive(receivei2c);
+  Wire.onReceive(receivei2c); // Call back
 
   // Start serial
   Serial.begin(9600);
