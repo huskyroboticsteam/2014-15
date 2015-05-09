@@ -217,12 +217,7 @@ void setup() {
 }
 
 void loop() {
-  // Check timeout, disable if necessary
-  if(millis() - timeLastPacket >= TIMEOUT) {
-    //Serial.println("TIMEOUT");
-    leftMotor.writeMicroseconds(NEUTRAL_FREQUENCY);
-    rightMotor.writeMicroseconds(NEUTRAL_FREQUENCY);
-  }
+
 
   // Get sensor information
   pressureValue= analogRead(PRESSURE) * 0.363;

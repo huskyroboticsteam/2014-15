@@ -3,19 +3,20 @@
 // Dual motor, only forwards and backwards
 #include <Arduino.h>
 
-void driveMotorFullSpeed(int potValue) {
-        // For motor current testing
+// void driveMotorFullSpeed(int potValue) {
+void driveMotor() {
+    // PWM have pulse seconds from 1000 microseconds to 2000
+  int leftSignal = map(leftPower, 0, 255, MIN_FREQUENCY, MAX_FREQUENCY);
+  int rightSignal= map(rightPower, 0, 255, MIN_FREQUENCY, MAX_FREQUENCY);
+  if (leftSignal < 1480 || leftSignal > 1520 || rightSignal < 1480 || leftSignal > 1520) {
+    leftMotor.writeMicroseconds(leftSignal);
+    rightMotor.writeMicroseconds(-rightSignal);
+  }	else {
+    MotorStop();
+  }
+}
 
-        
-  	// PWM have pulse seconds from 1000 microseconds to 2000
-  	sendValue = map(potValue, 0, 1023, 1250, 1750);
-  	if (sendValue < 1480 || sendValue > 1520)
-  	{
-  		leftMotor.writeMicroseconds(sendValue);
-  		rightMotor.writeMicroseconds(-sendValue);
-  	}	else {
-  		leftMotor.writeMicroseconds(1500);
-  		rightMotor.writeMicroseconds(1500);
-  	}
-    // delay(10);
+void MotorStop() {
+   leftMotor.writeMicroseconds(NEUTRAL_FREQUENCY);
+   rightMotor.writeMicroseconds(NEUTRAL_FREQUENCY);
 }
