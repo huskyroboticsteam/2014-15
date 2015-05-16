@@ -1,7 +1,4 @@
 #include "sciencestationDefine.h"
-#include "humidityReading.h"
-#include "sendReadings.h"
-#include "phReading.h"
 #include <Wire.h>
 
 void setup() {
