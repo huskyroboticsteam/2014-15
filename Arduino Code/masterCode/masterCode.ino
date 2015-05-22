@@ -6,6 +6,8 @@
 #include <EthernetUdp.h>
 #include <Servo.h>
 #include <Wire.h>
+#include <Adafruit_GPS.h>
+#include <SoftwareSerial.h>
 
 void setup()
 {
@@ -14,6 +16,7 @@ void setup()
     attachArmMotors();
     attachHandMotors();
     initializeWireless();
+    initializeGPS();
 }
 
 void loop()
@@ -25,4 +28,5 @@ void loop()
     writeToDriveMotors();
     writeToArmMotors();
     writeToHandMotors();
+    updateGPS();
 }
