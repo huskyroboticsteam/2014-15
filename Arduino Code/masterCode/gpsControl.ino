@@ -4,7 +4,7 @@ void initializeGPS()
 }
 
 // sends gps data over UDP to the rover
-void sendGpsData()
+void updateGPS()
 {
     Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
     Udp.write("N" + GPS.latitude);

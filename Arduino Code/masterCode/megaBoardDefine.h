@@ -1,10 +1,11 @@
 // May 22, 2015. Husky Robotics, made by Electrical Team
 #include "Arduino.h"
-#include <Adafruit_GPA.h>  // include this file in the Arduino libraries folder
+//#include <Adafruit_GPS.h>  // include this file in the Arduino libraries folder
 #include <Servo.h>
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
+//#include <SoftwareSerial.h>
 #include <Wire.h>
 
 

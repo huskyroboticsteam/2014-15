@@ -1,10 +1,11 @@
 // HARDWARE: Arduino MEGA 2560
 #include "Arduino.h"
-#include <Adafruit_GPA.h>  // include this file in the Arduino libraries folder
+//#include <Adafruit_GPS.h>  // include this file in the Arduino libraries folder
 #include <Servo.h>
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
+//#include <SoftwareSerial.h>
 #include <Wire.h>
 
 void setup()
@@ -13,7 +14,7 @@ void setup()
     attachArmMotors();
     attachHandMotors();
     initializeWireless();
-    initializeGPS();
+//    initializeGPS();
 }
 
 void loop()
@@ -25,5 +26,5 @@ void loop()
     writeToDriveMotors();
     writeToArmMotors();
     writeToHandMotors();
-    updateGPS();
+//    updateGPS();
 }
