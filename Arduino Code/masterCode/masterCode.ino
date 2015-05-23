@@ -1,17 +1,14 @@
 // HARDWARE: Arduino MEGA 2560
 #include "Arduino.h"
-#include "megaBoardDefine.h"
+#include <Adafruit_GPA.h>  // include this file in the Arduino libraries folder
+#include <Servo.h>
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
-#include <Servo.h>
 #include <Wire.h>
-#include <Adafruit_GPS.h>
-#include <SoftwareSerial.h>
 
 void setup()
 {
-    Serial.println("STARTING");
     attachDriveMotors();
     attachArmMotors();
     attachHandMotors();
