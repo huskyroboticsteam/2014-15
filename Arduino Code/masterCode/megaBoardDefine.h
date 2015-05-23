@@ -6,7 +6,6 @@
 #include <EthernetUdp.h>
 #include <Wire.h>
 
-
 // WIRELESS COMMUNICATION
 // Port to listen for UDP connections on 
 const int UDP_PORT = 8888;
@@ -20,7 +19,7 @@ int networkStatus = 1;
 int leftPower   = 128;
 int rightPower  = 128;
 int arm[3] = {1, 1, 1};
-int hand[3] = {1, 1, 1};
+int hand[4] = {1, 1, 1, 1};
 int misc[4] = {1, 1, 1, 1};
 
 // Need Analog input with male pin
@@ -28,7 +27,6 @@ int misc[4] = {1, 1, 1, 1};
 
 int potValue;
 int sendValue;
-
 
 // MOTOR CONSTANTS
 
@@ -41,13 +39,13 @@ Servo rightMotor;
 int handPos[3] = {90, 90, 90};
 // Need PWM input with male pin for the direct arm motor controller
 Servo armMotor[3];
-Servo handMotor[4];
-const int HAND[4] = {28, 27, 26, 25};      // pins for motor control
+Servo handMotor[3];
+const int GRIPPER[3] = {31, 33, 35};    // Pins for opening/closing the grippers.
+const int HAND[3] = {2, 4, 9};      // pins for motor control
 const int TALON_ARM[3] = {6, 7, 8};   // pins for motor control
 #define NEUTRAL_FREQUENCY      1500
 #define SPEEDUP_FREQUENCY      1750   // For arm
 #define SPEEDDOWN_FREWQUENCY   1250   // For arm
-
 
 // SENSOR PINS
 #define CURRENT_SENSOR_PIN  A1  // connected to analog 1     for monitoring current on the big ass battery
@@ -58,3 +56,8 @@ const int TALON_ARM[3] = {6, 7, 8};   // pins for motor control
 #define TIMEOUT  1000  // in milliseconds. This is to test to see if there is still wireless connection
 #define MIN_FREQUENCY       1250
 #define MAX_FREQUENCY       1750
+
+// MIN AND MAX HAND SERVO VALUES
+
+#define MIN_HAND  50
+#define MAX_HAND  104
