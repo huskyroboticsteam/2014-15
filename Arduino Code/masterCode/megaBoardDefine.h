@@ -1,10 +1,12 @@
-// Apr 11, 2015. Husky Robotics, made by Electrical Team
+// May 22, 2015. Husky Robotics, made by Electrical Team
 #include "Arduino.h"
+#include <Adafruit_GPA.h>  // include this file in the Arduino libraries folder
 #include <Servo.h>
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 #include <Wire.h>
+
 
 // WIRELESS COMMUNICATION
 // Port to listen for UDP connections on 
@@ -21,15 +23,13 @@ int rightPower  = 128;
 int arm[3] = {1, 1, 1};
 int hand[4] = {1, 1, 1, 1};
 int misc[4] = {1, 1, 1, 1};
-
 // Need Analog input with male pin
 #define BAUD_RATE 9600
-
 int potValue;
 int sendValue;
 
-// MOTOR CONSTANTS
 
+// MOTOR CCONTROL
 // Need PWM input with male pin for motor controller
 // connect to RS232
 Servo leftMotor;
@@ -47,10 +47,12 @@ const int TALON_ARM[3] = {6, 7, 8};   // pins for motor control
 #define SPEEDUP_FREQUENCY      1750   // For arm
 #define SPEEDDOWN_FREWQUENCY   1250   // For arm
 
+
 // SENSOR PINS
 #define CURRENT_SENSOR_PIN  A1  // connected to analog 1     for monitoring current on the big ass battery
 #define COMPRESSOR_PIN      A0  // connected to analog 0     for reading pressure
 #define COMPRESSOR_CONTROL  23  // connected to digital 23   for increasing pressure on pneumatic suspension
+
 
 // CONTROL AND LOGIC CONSTANTS
 #define TIMEOUT  1000  // in milliseconds. This is to test to see if there is still wireless connection
@@ -58,6 +60,8 @@ const int TALON_ARM[3] = {6, 7, 8};   // pins for motor control
 #define MAX_FREQUENCY       1750
 
 // MIN AND MAX HAND SERVO VALUES
-
 #define MIN_HAND  50
 #define MAX_HAND  104
+
+
+// GPS CONSTANTS AND VARIABLES
