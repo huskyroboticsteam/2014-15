@@ -31,15 +31,15 @@ void writeToHandMotors()
     if(hand[segments] == 0){
         digitalWrite(GRIPPER[1], HIGH);
         digitalWrite(GRIPPER[2], LOW);
-        Serial.println("Close");
+    //    Serial.println("Close");
     } else if (hand[segments] == 2){
         digitalWrite(GRIPPER[1], LOW);
         digitalWrite(GRIPPER[2], HIGH);
-        Serial.println("Open");
+     //   Serial.println("Open");
     } else {
         digitalWrite(GRIPPER[1], LOW);
         digitalWrite(GRIPPER[2], LOW);
-        Serial.println("Hold");
+      //  Serial.println("Hold");
     }
 }
 

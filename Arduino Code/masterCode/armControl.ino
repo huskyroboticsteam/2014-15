@@ -23,7 +23,7 @@ void armRiseAndBack() {
         armMotor[i].writeMicroseconds(SPEEDUP_FREQUENCY);
         //Serial.println(TALON_ARM[i]);
         delay(5000);
-        armMotor[i].writeMicroseconds(SPEEDDOWN_FREWQUENCY);
+        armMotor[i].writeMicroseconds(SPEEDDOWN_FREQUENCY);
         delay(5000);
         armMotor[i].writeMicroseconds(NEUTRAL_FREQUENCY);
       }

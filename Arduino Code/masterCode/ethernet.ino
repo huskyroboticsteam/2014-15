@@ -32,12 +32,13 @@ void receiveWirelessData()
 
 void initializeWireless()
 { // begin wireless communication
-    //Serial.begin(BAUD_RATE);
-    Ethernet.begin(mac, ip);
+    Serial.begin(BAUD_RATE);
+    Ethernet.begin(mac);
+    //Ethernet.begin(mac, ip);
     Udp.begin(UDP_PORT);
     timeLastPacket = millis();
-    //Serial.println("INITIALIZED");
-    
+    Serial.println("INITIALIZED");
+//    Serial.println("WRITTEN");
 }
 
 

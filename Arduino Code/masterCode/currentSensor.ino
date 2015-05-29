@@ -10,29 +10,12 @@
 int currentReadingMax = 0;
 int currentReadingMin = 169;
 
-void getReadingFromCurrentSensor() {
-    // Data gathering
-    int currentReading = analogRead(CURRENT_SENSOR_PIN);
-    delay(500);
-    if (currentReading > currentReadingMax) {
-        currentReadingMax = currentReading;
-    }  
-    if (currentReading < currentReadingMin) {
-        currentReadingMin = currentReading;
-    }
-  // Data translating to milliAmps
-  int current = rareDataToAmp(currentReading); // in milliAmps
-  int currentMax = rareDataToAmp(currentReadingMax);
-  int currentMin = rareDataToAmp(currentReadingMin);
-  printReading(current, currentMax, currentMin);
-}
-
 // Turn the rare analog read from Arduino to current reading
 // @requires: an analog reading input from ACS758
 // @throws:   If input is smaller than 101 or larger than 189, 
 //            throws error message in console
 // @returns:  a current value in milliAmps. 
-int rareDataToAmp(int analogReading) {
+int rawDataToAmp(int analogReading) {
   // From the Datasheet, we have 40mV/A, which equals to 25 mA/mV
   int sensitivity = 25;
   // Value measured, Apr. 11, 2015, Beck Pang & Andrew DeBartolo
@@ -54,10 +37,27 @@ int rareDataToAmp(int analogReading) {
   return voltageRead * sensitivity;
 }
 
+
 void overCurrentCheck()
 {
-    
+    int currentReading = analogRead(CURRENT_SENSOR_PIN);
+    int current = rawDataToAmp(currentReading);
+    if (current > DANGER_CURRENT) {
+        digitalWrite(ALARM_PIN, HIGH);
+        for (int i = 0; i <= 10; i++) {
+            Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+            Udp.write("OVER CURRENT!!!!!!!!!");
+            Udp.endPacket();
+        }
+        for(int i = 0; i < 3; i++) {
+            armMotor[i].writeMicroseconds(NEUTRAL_FREQUENCY);
+        }
+        leftMotor.writeMicroseconds(NEUTRAL_FREQUENCY);
+        rightMotor.writeMicroseconds(NEUTRAL_FREQUENCY);
+        delay(15000);
+    }
 }
+
 
 void printReading(int current, int currentMax, int currentMin) {
   Serial.print("A1 Reads current: ");
